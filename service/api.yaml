@@ -1,0 +1,303 @@
+swagger: "2.0"
+info:
+  description: API for Face Generator Project
+  version: 1.0.0
+  title: Face Generator
+host: innocenceproject-api-3h7rz8o11siiu.apigateway.innocenceprojectcloud.cloud.goog 
+schemes:
+- https
+produces:
+- application/json
+security:
+- api_key: []
+paths:
+  /hello:
+    get:
+      tags:
+        - "Endpoints"
+      summary: "Test endpoint"
+      description: ""
+      operationId: "hello"
+      x-google-backend:
+        address: https://gpuservice-2kkbwofikq-uc.a.run.app/hello
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Hello"
+  /faces:
+    get:
+      tags:
+      - "Endpoints"
+      summary: "Get faces from database"
+      operationId: "getFaces"
+      parameters:
+      - name: "params"
+        description: "From and to IDs to look"
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+            - id1
+            - id2
+          properties:
+            id1:
+              type: integer
+              example: 0
+            id2:
+              type: integer
+              example: 3
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Faces"
+    
+    post:
+      tags:
+      - "Endpoints"
+      summary: "Create random faces"
+      operationId: "createFaces"
+      parameters:
+      - name: "params"
+        description: "Amount of faces to create"
+        in: body
+        schema:
+          type: object
+          required:
+            - amount
+          properties:
+            amount:
+              type: integer
+              example: 5
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreateFaces"
+  /transition:
+    post:
+      tags:
+      - "Endpoints"
+      summary: "Create transition between two faces"
+      operationId: "createTransition"
+      parameters:
+      - name: "params"
+        description: "Amount of faces to create"
+        in: body
+        schema:
+          type: object
+          required:
+            - amount
+            - id1
+            - id2
+          properties:
+            amount:
+              type: integer
+              example: 5
+            id1:
+              type: integer
+              example: 0
+            id2:
+              type: integer
+              example: 3
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreateFaces"
+  /latentspace:
+    post:
+      tags:
+      - "Endpoints"
+      summary: "Map external image to latent space"
+      operationId: "imageToLatent"
+      parameters:
+      - name: "params"
+        description: "Image base64"
+        in: body
+        schema:
+          type: object
+          required:
+            - file
+          properties:
+            file:
+              type: string
+              example: b64_image
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreateFace"
+  /save:
+    post:
+      tags:
+      - "Endpoints"
+      summary: "Save image to database"
+      operationId: "saveImage"
+      parameters:
+      - name: "params"
+        description: "Image latent code"
+        in: body
+        schema:
+          type: object
+          required:
+            - z
+          properties:
+            file:
+              type: integer
+              example: z_to_save
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Id"
+  /features:
+    post:
+      tags:
+      - "Endpoints"
+      summary: "Modify features of face"
+      operationId: "modifyFace"
+      parameters:
+      - name: "params"
+        description: "Attributes"
+        in: body
+        schema:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              example: 1
+            ageAmount:
+              type: number
+              example: 1.5
+            eyeDistanceAmount:
+              type: number
+              example: 1.5
+            eyeEyebrowDistanceAmount:
+              type: number
+              example: 1.5
+            eyeRatioAmount:
+              type: number
+              example: 1.5
+            eyesOpenAmount:
+              type: number
+              example: 1.5
+            genderAmount:
+              type: number
+              example: 1.5
+            lipRatioAmount:
+              type: number
+              example: 1.5
+            mouthOpenAmount:
+              type: number
+              example: 1.5
+            mouthRatioAmount:
+              type: number
+              example: 1.5
+            noseMouthDistanceAmount:
+              type: number
+              example: 1.5
+            noseRatioAmount:
+              type: number
+              example: 1.5
+            noseTipAmount:
+              type: number
+              example: 1.5
+            pitchAmount:
+              type: number
+              example: 1.5
+            rollAmount:
+              type: number
+              example: 1.5
+            smileAmount:
+              type: number
+              example: 1.5
+            yawAmount:
+              type: number
+              example: 1.5
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreateFace"
+  /interchange:
+    post:
+      tags:
+      - "Endpoints"
+      summary: "Change styles between two faces"
+      operationId: "changeStyles"
+      parameters:
+      - name: "params"
+        description: "Faces to change styles"
+        in: body
+        schema:
+          type: object
+          required:
+            - id1
+            - id2
+          properties:
+            id1:
+              type: integer
+              example: 0
+            id2:
+              type: integer
+              example: 3
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreateFaces"
+    
+definitions:
+  Hello:
+    type: object
+    properties:
+      msg:
+        type: "string"
+        example: "hello! :)"
+  Faces:
+    type: object
+    properties:
+      ids:
+        type: "array"
+        items:
+          type: "integer"
+        example: [0,1,2]
+      imgs_bytes:
+        type: "array"
+        items:
+          type: "string"
+        example: ["base64_1", "base64_2", "base64_3"]
+  CreateFaces:
+    type: object
+    properties:
+      zs:
+        type: "array"
+        items:
+          type: "integer"
+        example: [z1, z2, z3]
+      imgs_bytes:
+        type: "array"
+        items:
+          type: "string"
+        example: [base64_1, base64_2, base64_3]
+  CreateFace:
+    type: object
+    properties:
+      img_bytes:
+        type: "string"
+        example: base64
+      z:
+        type: "integer"
+        example: z
+  Id:
+    type: object
+    properties:
+      id:
+        type: "integer"
+        example: 8
+      
