@@ -31,6 +31,8 @@ paths:
       - "Endpoints"
       summary: "Get faces from database"
       operationId: "getFaces"
+      x-google-backend:
+        address: https://imageservice-2kkbwofikq-uc.a.run.app/faces
       parameters:
       - name: "params"
         description: "From and to IDs to look"
@@ -59,6 +61,8 @@ paths:
       - "Endpoints"
       summary: "Create random faces"
       operationId: "createFaces"
+      x-google-backend:
+        address: https://gpuservice-2kkbwofikq-uc.a.run.app/faces
       parameters:
       - name: "params"
         description: "Amount of faces to create"
@@ -82,6 +86,8 @@ paths:
       - "Endpoints"
       summary: "Create transition between two faces"
       operationId: "createTransition"
+      x-google-backend:
+        address: https://gpuservice-2kkbwofikq-uc.a.run.app/transition
       parameters:
       - name: "params"
         description: "Amount of faces to create"
@@ -113,6 +119,8 @@ paths:
       - "Endpoints"
       summary: "Map external image to latent space"
       operationId: "imageToLatent"
+      x-google-backend:
+        address: https://gpuservice-2kkbwofikq-uc.a.run.app/latentspace
       parameters:
       - name: "params"
         description: "Image base64"
@@ -136,6 +144,8 @@ paths:
       - "Endpoints"
       summary: "Save image to database"
       operationId: "saveImage"
+      x-google-backend:
+        address: https://imageservice-2kkbwofikq-uc.a.run.app/save
       parameters:
       - name: "params"
         description: "Image latent code"
@@ -159,6 +169,8 @@ paths:
       - "Endpoints"
       summary: "Modify features of face"
       operationId: "modifyFace"
+      x-google-backend:
+        address: https://gpuservice-2kkbwofikq-uc.a.run.app/features
       parameters:
       - name: "params"
         description: "Attributes"
@@ -230,6 +242,8 @@ paths:
       - "Endpoints"
       summary: "Change styles between two faces"
       operationId: "changeStyles"
+      x-google-backend:
+        address: https://gpuservice-2kkbwofikq-uc.a.run.app/interchange
       parameters:
       - name: "params"
         description: "Faces to change styles"

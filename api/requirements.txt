@@ -8,4 +8,5 @@ tqdm
 Flask==0.12.2
 flask-cors
 gunicorn==19.9.0
+cmake
 dlib
