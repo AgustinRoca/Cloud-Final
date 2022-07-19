@@ -10,10 +10,10 @@ def main():
 
     sub = pubsub_v1.SubscriberClient()
     subscrption_path = 'projects/innocenceprojectcloud/subscriptions/task-sub'
-    
+
     flow_control =  pubsub_v1.types.FlowControl(max_messages=1)
     streaming_pull_future = sub.subscribe(subscrption_path, callback=callback, flow_control=flow_control)
-
+    print('Subscribed')
     with sub:
         try:
             streaming_pull_future.result()
@@ -22,7 +22,7 @@ def main():
             streaming_pull_future.result()
 
 def callback(message):
-        data = message.data.decode("utf-8") 
+        data = message.data.decode("utf-8")
         print(message)
         message_id = message.message_id
         message.ack()
@@ -30,7 +30,7 @@ def callback(message):
             imgs_bytes, zs = faces(data)
             response = {'imgs_bytes': imgs_bytes, 'zs': zs}
             json_response = json.dumps(response)
-            
+
         elif data.startswith('transition'):
             transition(data)
         elif data.startswith('latentspace'):
@@ -98,4 +98,3 @@ def error(data):
 
 if __name__ == "__main__":
     main()
-
