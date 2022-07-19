@@ -1,6 +1,8 @@
+from time import sleep
 from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 from google.cloud import pubsub_v1
+from google.api_core import retry
 import json
 from json_serializer import NumpyArrayEncoder
 
@@ -14,14 +16,7 @@ CORS(app)
 pub = pubsub_v1.PublisherClient()
 topic_path = 'projects/innocenceprojectcloud/topics/task'
 
-subscrption_path = 'projects/innocenceprojectcloud/subscriptions/task_response-sub'
-
-response = ""
-message_id = ""
-
-def callback(message):
-    response = message.data
-    message.ack()
+subscription_path = 'projects/innocenceprojectcloud/subscriptions/task_response-sub'
 
 def make_error(status_code, message):
     response = jsonify({
@@ -48,18 +43,43 @@ def generateFaces():
 
     future = pub.publish(topic_path, data)
     message_id = str(future.result())
-    sub = pubsub_v1.SubscriberClient()
+    print(f'Message {message_id} published for GCE to process')
 
-    with sub:
-        streaming_pull_future = sub.subscribe(subscrption_path, callback=callback)
-        
-        try:
-            streaming_pull_future.result() # se bloquea hasta que recibe
-            streaming_pull_future.cancel(await_msg_callbacks=True) # cuando termine el callback se cierra
-            return json.dumps(response, cls=NumpyArrayEncoder) 
-        except TimeoutError:
-            streaming_pull_future.cancel()
-            streaming_pull_future.result()      
+    subscriber = pubsub_v1.SubscriberClient()
+
+    NUM_MESSAGES = 3
+
+    # Wrap the subscriber in a 'with' block to automatically call close() to
+    # close the underlying gRPC channel when done.
+    with subscriber:
+        # The subscriber pulls a specific number of messages. The actual
+        # number of messages pulled may be smaller than max_messages.
+        done = False
+        while not done:
+            response = subscriber.pull(
+                request={"subscription": subscription_path, "max_messages": NUM_MESSAGES},
+                retry=retry.Retry(deadline=300),
+            )
+
+            if len(response.received_messages) != 0:
+                ack_ids = []
+                for received_message in response.received_messages:
+                    if received_message.message.attributes.get('id') == message_id:
+                        print(f"Received: {received_message.message.data}.")
+                        ack_ids.append(received_message.ack_id)
+                        response = received_message.message.data
+                        done = True
+                        subscriber.acknowledge(
+                            request={"subscription": subscription_path, "ack_ids": ack_ids}
+                        )
+                    else:
+                        print('Message not directed to the message I published')
+                        id_got = received_message.message.attributes.get('id')
+                        print(f'ID: {id_got}')
+            else:
+                sleep(5)
+    ans = json.loads(response.decode('utf-8'))
+    return jsonify(ans) 
 
 
 @app.route('/transition', methods=['POST'])

@@ -20,6 +20,7 @@ paths:
       operationId: "hello"
       x-google-backend:
         address: https://gpuservice-2kkbwofikq-uc.a.run.app/hello
+        deadline: 600
       responses:
         "200":
           description: "successful operation"
@@ -33,6 +34,7 @@ paths:
       operationId: "getFaces"
       x-google-backend:
         address: https://imageservice-2kkbwofikq-uc.a.run.app/faces
+        deadline: 600
       parameters:
       - name: "params"
         description: "From and to IDs to look"
@@ -63,6 +65,7 @@ paths:
       operationId: "createFaces"
       x-google-backend:
         address: https://gpuservice-2kkbwofikq-uc.a.run.app/faces
+        deadline: 600
       parameters:
       - name: "params"
         description: "Amount of faces to create"
@@ -88,6 +91,7 @@ paths:
       operationId: "createTransition"
       x-google-backend:
         address: https://gpuservice-2kkbwofikq-uc.a.run.app/transition
+        deadline: 600
       parameters:
       - name: "params"
         description: "Amount of faces to create"
@@ -121,6 +125,7 @@ paths:
       operationId: "imageToLatent"
       x-google-backend:
         address: https://gpuservice-2kkbwofikq-uc.a.run.app/latentspace
+        deadline: 600
       parameters:
       - name: "params"
         description: "Image base64"
@@ -146,6 +151,7 @@ paths:
       operationId: "saveImage"
       x-google-backend:
         address: https://imageservice-2kkbwofikq-uc.a.run.app/save
+        deadline: 600
       parameters:
       - name: "params"
         description: "Image latent code"
@@ -171,6 +177,7 @@ paths:
       operationId: "modifyFace"
       x-google-backend:
         address: https://gpuservice-2kkbwofikq-uc.a.run.app/features
+        deadline: 600
       parameters:
       - name: "params"
         description: "Attributes"
@@ -244,6 +251,7 @@ paths:
       operationId: "changeStyles"
       x-google-backend:
         address: https://gpuservice-2kkbwofikq-uc.a.run.app/interchange
+        deadline: 600
       parameters:
       - name: "params"
         description: "Faces to change styles"

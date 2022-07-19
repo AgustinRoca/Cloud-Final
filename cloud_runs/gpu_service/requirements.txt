@@ -3,3 +3,4 @@ flask_cors
 gunicorn
 google-cloud-pubsub
 numpy
+google-api-core
