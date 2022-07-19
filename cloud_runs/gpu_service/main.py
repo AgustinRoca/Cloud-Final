@@ -73,7 +73,7 @@ def generateFaces():
                             request={"subscription": subscription_path, "ack_ids": ack_ids}
                         )
                     else:
-                        print('Message not directed to the message I published')
+                        print(f'Message not directed to the message I published: {message_id}')
                         id_got = received_message.message.attributes.get('id')
                         print(f'ID: {id_got}')
             else:

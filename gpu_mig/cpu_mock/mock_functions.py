@@ -20,7 +20,7 @@ def generate_random_faces(amount):
         f = os.path.join(path_of_the_directory,filename)
         if os.path.isfile(f):
             image_pool.append(Image.open(f))
-    
+    amount = min(amount, 10)
     for i in range(amount):
         seed = np.random.randint(0,len(image_pool))
         image, z = image_pool[seed], seed
