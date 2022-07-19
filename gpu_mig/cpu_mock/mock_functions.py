@@ -31,24 +31,29 @@ def generate_random_faces(amount):
     return imgs_bytes, zs
 
 def generate_transition(id1, id2, amount):
-    sleep(1)
-    # return predetermined images
-    return Image_to_bytes()
+    sleep(3)
+    return generate_random_faces(amount)
 
 def base64_to_latent(base64str):
-    sleep(1)
-    # return predetermined images
-    return Image_to_bytes()
+    image_pool = []
+    path_of_the_directory= './input_images'
+    for filename in os.listdir(path_of_the_directory):
+        f = os.path.join(path_of_the_directory,filename)
+        if os.path.isfile(f):
+            image_pool.append(Image.open(f))
+    seed = np.random.randint(0,len(image_pool))
+    image, z = image_pool[seed], seed
+    img_bytes = Image_to_bytes(image)
+    sleep(20)
+    return img_bytes, z
 
 def change_features(id1, features_dict):
     sleep(1)
-    # return predetermined images
-    return Image_to_bytes()
+    return base64_to_latent('a')
 
 def mix_styles(id1, id2):
     sleep(1)
-    # return predetermined images
-    return Image_to_bytes()
+    return generate_random_faces(2)
 
 def Image_to_bytes(img):
     byte_arr = BytesIO()

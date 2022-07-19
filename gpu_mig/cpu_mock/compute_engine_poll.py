@@ -30,17 +30,25 @@ def callback(message):
             imgs_bytes, zs = faces(data)
             response = {'imgs_bytes': imgs_bytes, 'zs': zs}
             json_response = json.dumps(response)
-
         elif data.startswith('transition'):
-            transition(data)
+            imgs_bytes, zs = transition(data)
+            response = {'imgs_bytes': imgs_bytes, 'zs': zs}
+            json_response = json.dumps(response)
         elif data.startswith('latentspace'):
-            latentspace(data)
+            img_bytes, z = latentspace(data)
+            response = {'img_bytes': img_bytes, 'z': z}
+            json_response = json.dumps(response)
         elif data.startswith('features'):
-            features(data)
+            img_bytes, z = features(data)
+            response = {'img_bytes': img_bytes, 'z': z}
+            json_response = json.dumps(response)
         elif data.startswith('interchange'):
-            interchange(data)
+            imgs_bytes, zs = interchange(data)
+            response = {'imgs_bytes': imgs_bytes, 'zs': zs}
+            json_response = json.dumps(response)
         else:
-            error(data)
+            response = {'error': 404, 'message': 'Invalid message'}
+            json_response = json.dumps(response)
 
         pub = pubsub_v1.PublisherClient()
         topic_path = 'projects/innocenceprojectcloud/topics/task_response'
@@ -56,13 +64,11 @@ def faces(data):
 
 def transition(data):
     args = data.split(';')
-    generate_transition(int(args[1]), int(args[2]), int(args[3]))
-    sleep(2)
+    return generate_transition(int(args[1]), int(args[2]), int(args[3]))
 
 def latentspace(data):
     args = data.split(';')
-    base64_to_latent(args[1])
-    sleep(20)
+    return base64_to_latent(args[1])
 
 def features(data):
     args = data.split(';')
@@ -85,13 +91,11 @@ def features(data):
     features_dict['smile'] = float(args[16])
     features_dict['yaw'] = float(args[17])
 
-    change_features(id, features_dict)
-    sleep(2)
+    return change_features(id, features_dict)
 
 def interchange(data):
     args = data.split(';')
-    mix_styles(args[1], args[2])
-    sleep(1)
+    return mix_styles(args[1], args[2])
 
 def error(data):
     sleep(1)

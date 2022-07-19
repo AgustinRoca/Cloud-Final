@@ -45,41 +45,7 @@ def generateFaces():
     message_id = str(future.result())
     print(f'Message {message_id} published for GCE to process')
 
-    subscriber = pubsub_v1.SubscriberClient()
-
-    NUM_MESSAGES = 3
-
-    # Wrap the subscriber in a 'with' block to automatically call close() to
-    # close the underlying gRPC channel when done.
-    with subscriber:
-        # The subscriber pulls a specific number of messages. The actual
-        # number of messages pulled may be smaller than max_messages.
-        done = False
-        while not done:
-            response = subscriber.pull(
-                request={"subscription": subscription_path, "max_messages": NUM_MESSAGES},
-                retry=retry.Retry(deadline=300),
-            )
-
-            if len(response.received_messages) != 0:
-                ack_ids = []
-                for received_message in response.received_messages:
-                    if received_message.message.attributes.get('id') == message_id:
-                        print(f"Received: {received_message.message.data}.")
-                        ack_ids.append(received_message.ack_id)
-                        response = received_message.message.data
-                        done = True
-                        subscriber.acknowledge(
-                            request={"subscription": subscription_path, "ack_ids": ack_ids}
-                        )
-                    else:
-                        print(f'Message not directed to the message I published: {message_id}')
-                        id_got = received_message.message.attributes.get('id')
-                        print(f'ID: {id_got}')
-            else:
-                sleep(5)
-    ans = json.loads(response.decode('utf-8'))
-    return jsonify(ans) 
+    return get_response_message(message_id)
 
 
 @app.route('/transition', methods=['POST'])
@@ -92,11 +58,10 @@ def generateTransition():
     data = data.encode('utf-8')
 
     future = pub.publish(topic_path, data)
-    return jsonify({'msg': f'Published message id ${future.result()}'})
+    message_id = str(future.result())
+    print(f'Message {message_id} published for GCE to process')
 
-#     imgs_bytes, zs = service.generate_transition(id1, id2, amount)
-#     jsonData = {'zs': zs, 'imgs_bytes': imgs_bytes}
-#     return json.dumps(jsonData, cls=NumpyArrayEncoder)    
+    return get_response_message(message_id)   
 
 @app.route('/latentspace', methods=['POST'])
 def image_to_latent_space():
@@ -105,12 +70,10 @@ def image_to_latent_space():
     data = data.encode('utf-8')
 
     future = pub.publish(topic_path, data)
-    return jsonify({'msg': f'Published message id ${future.result()}'})
-    # img_bytes, z = service.base64_to_latent(base64str)
-    # if img_bytes is None:
-    #     return make_error(400, 'No face found')
-    # jsonData = {'z': z, 'img_bytes': img_bytes}
-    # return json.dumps(jsonData, cls=NumpyArrayEncoder)    
+    message_id = str(future.result())
+    print(f'Message {message_id} published for GCE to process')
+
+    return get_response_message(message_id)   
 
 @app.route('/features', methods=['POST'])
 def change_features():
@@ -164,52 +127,14 @@ def change_features():
         yawAmount = 0
     id = request.form['id']
 
-    data = f'features;\
-        {id};\
-        {ageAmount};\
-        {eyeDistanceAmount};\
-        {eyeEyebrowDistanceAmount};\
-        {eyeRatioAmount};\
-        {eyesOpenAmount};\
-        {genderAmount};\
-        {lipRatioAmount};\
-        {mouthOpenAmount};\
-        {mouthRatioAmount};\
-        {noseMouthDistanceAmount};\
-        {noseRatioAmount};\
-        {noseTipAmount};\
-        {noseTipAmount};\
-        {pitchAmount};\
-        {rollAmount};\
-        {smileAmount};\
-        {yawAmount}'
+    data = f'features;{id};{ageAmount};{eyeDistanceAmount};{eyeEyebrowDistanceAmount};{eyeRatioAmount};{eyesOpenAmount};{genderAmount};{lipRatioAmount};{mouthOpenAmount};{mouthRatioAmount};{noseMouthDistanceAmount};{noseRatioAmount};{noseTipAmount};{noseTipAmount};{pitchAmount};{rollAmount};{smileAmount};{yawAmount}'
     data = data.encode('utf-8')
 
     future = pub.publish(topic_path, data)
-    return jsonify({'msg': f'Published message id ${future.result()}'})
+    message_id = str(future.result())
+    print(f'Message {message_id} published for GCE to process')
 
-    # features_dict = {}
-    
-    # features_dict['age'] = float(ageAmount)
-    # features_dict['eye_distance'] = float(eyeDistanceAmount)
-    # features_dict['eye_eyebrow_distance'] = float(eyeEyebrowDistanceAmount)
-    # features_dict['eye_ratio'] = float(eyeRatioAmount)
-    # features_dict['eyes_open'] = float(eyesOpenAmount)
-    # features_dict['gender'] = float(genderAmount)
-    # features_dict['lip_ratio'] = float(lipRatioAmount)
-    # features_dict['mouth_open'] = float(mouthOpenAmount)
-    # features_dict['mouth_ratio'] = float(mouthRatioAmount)
-    # features_dict['nose_mouth_distance'] = float(noseMouthDistanceAmount)
-    # features_dict['nose_ratio'] = float(noseRatioAmount)
-    # features_dict['nose_tip'] = float(noseTipAmount)
-    # features_dict['pitch'] = float(pitchAmount)
-    # features_dict['roll'] = float(rollAmount)
-    # features_dict['smile'] = float(smileAmount)
-    # features_dict['yaw'] = float(yawAmount)
-
-#     img_bytes, z = service.change_features(id, features_dict)
-#     jsonData = {'z': z, 'img_bytes': img_bytes}
-#     return json.dumps(jsonData, cls=NumpyArrayEncoder)  
+    return get_response_message(message_id)
 
 @app.route('/interchange', methods=['POST'])
 def mix_styles():
@@ -220,8 +145,46 @@ def mix_styles():
     data = data.encode('utf-8')
 
     future = pub.publish(topic_path, data)
-    return jsonify({'msg': f'Published message id ${future.result()}'})
+    message_id = str(future.result())
+    print(f'Message {message_id} published for GCE to process')
 
-#     imgs_bytes, zs = service.mix_styles(id1, id2)
-#     jsonData = {'zs': zs, 'imgs_bytes': imgs_bytes}
-#     return json.dumps(jsonData, cls=NumpyArrayEncoder)
+    return get_response_message(message_id)
+
+def get_response_message(message_id):
+    subscriber = pubsub_v1.SubscriberClient()
+
+    NUM_MESSAGES = 3
+
+    # Wrap the subscriber in a 'with' block to automatically call close() to
+    # close the underlying gRPC channel when done.
+    with subscriber:
+        # The subscriber pulls a specific number of messages. The actual
+        # number of messages pulled may be smaller than max_messages.
+        done = False
+        while not done:
+            response = subscriber.pull(
+                request={"subscription": subscription_path, "max_messages": NUM_MESSAGES},
+                retry=retry.Retry(deadline=300),
+            )
+
+            if len(response.received_messages) != 0:
+                ack_ids = []
+                for received_message in response.received_messages:
+                    if received_message.message.attributes.get('id') == message_id:
+                        print(f"Received: {received_message.message.data}.")
+                        ack_ids.append(received_message.ack_id)
+                        response = received_message.message.data
+                        done = True
+                        subscriber.acknowledge(
+                            request={"subscription": subscription_path, "ack_ids": ack_ids}
+                        )
+                    else:
+                        print(f'Message not directed to the message I published: {message_id}')
+                        id_got = received_message.message.attributes.get('id')
+                        print(f'ID: {id_got}')
+            else:
+                sleep(5)
+    ans = json.loads(response.decode('utf-8'))
+    if 'error' in ans:
+        return make_error(404, 'Invalid message')
+    return jsonify(ans) 
