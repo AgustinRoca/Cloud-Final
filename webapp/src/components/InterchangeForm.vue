@@ -64,7 +64,7 @@
                 formData.append('id1', this.id1)
                 formData.append('id2', this.id2)
                 axios({
-                    url: 'http://0.0.0.0:5000/interchange',
+                    url: 'https://api.innocenceproject.xyz/interchange',
                     method: 'post',
                     data: formData,
                     headers: { "Content-Type": "multipart/form-data" },

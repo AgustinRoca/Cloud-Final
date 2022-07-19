@@ -76,7 +76,7 @@
                 formData.append('id2', this.id2)
                 formData.append('amount', this.amount)
                 axios({
-                    url: 'http://0.0.0.0:5000/transition',
+                    url: 'https://api.innocenceproject.xyz/transition',
                     method: 'post',
                     data: formData,
                     headers: { "Content-Type": "multipart/form-data" },

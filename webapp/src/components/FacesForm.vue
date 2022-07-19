@@ -44,7 +44,7 @@
                 let formData = new FormData();
                 formData.append('amount', this.amount)
                 axios({
-                    url: 'http://0.0.0.0:5000/faces',
+                    url: 'https://api.innocenceproject.xyz/faces',
                     method: 'post',
                     data: formData,
                     headers: { "Content-Type": "multipart/form-data" },

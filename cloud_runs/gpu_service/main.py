@@ -1,8 +1,8 @@
 from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 from google.cloud import pubsub_v1
-
-# from json_serializer import NumpyArrayEncoder
+import json
+from json_serializer import NumpyArrayEncoder
 
 app = Flask(__name__)
 
@@ -13,6 +13,15 @@ CORS(app)
 
 pub = pubsub_v1.PublisherClient()
 topic_path = 'projects/innocenceprojectcloud/topics/task'
+
+subscrption_path = 'projects/innocenceprojectcloud/subscriptions/task_response-sub'
+
+response = ""
+message_id = ""
+
+def callback(message):
+    response = message.data
+    message.ack()
 
 def make_error(status_code, message):
     response = jsonify({
@@ -38,11 +47,19 @@ def generateFaces():
     data = data.encode('utf-8')
 
     future = pub.publish(topic_path, data)
-    return jsonify({'msg': f'Published message id ${future.result()}'})
+    message_id = str(future.result())
+    sub = pubsub_v1.SubscriberClient()
 
-    # imgs_bytes, zs = service.generate_random_images(amount)
-    # jsonData = {'zs': zs, 'imgs_bytes': imgs_bytes}
-    # return json.dumps(jsonData, cls=NumpyArrayEncoder)     
+    with sub:
+        streaming_pull_future = sub.subscribe(subscrption_path, callback=callback)
+        
+        try:
+            streaming_pull_future.result() # se bloquea hasta que recibe
+            streaming_pull_future.cancel(await_msg_callbacks=True) # cuando termine el callback se cierra
+            return json.dumps(response, cls=NumpyArrayEncoder) 
+        except TimeoutError:
+            streaming_pull_future.cancel()
+            streaming_pull_future.result()      
 
 
 @app.route('/transition', methods=['POST'])

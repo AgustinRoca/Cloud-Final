@@ -60,7 +60,7 @@
         methods : {
             submit(){
                 axios({
-                    url: 'http://0.0.0.0:5000/faces?id1='+this.id1+'&id2='+this.id2,
+                    url: 'hhttps://api.innocenceproject.xyz/faces?id1='+this.id1+'&id2='+this.id2,
                     method: 'get',
                 }).then((response) => {
                     console.log(response)

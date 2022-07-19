@@ -58,7 +58,7 @@ export default {
             let formData = new FormData();
             formData.append('z', this.zs[this.img_index - 1])
             axios({
-                url: 'http://0.0.0.0:5000/save',
+                url: 'https://api.innocenceproject.xyz/save',
                 method: 'post',
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },

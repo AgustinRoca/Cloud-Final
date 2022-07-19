@@ -289,7 +289,7 @@
                 formData.append('yawAmount', this.yawAmount)
 
                 axios({
-                    url: 'http://0.0.0.0:5000/features',
+                    url: 'https://api.innocenceproject.xyz/features',
                     method: 'post',
                     data: formData,
                     headers: { "Content-Type": "multipart/form-data" },

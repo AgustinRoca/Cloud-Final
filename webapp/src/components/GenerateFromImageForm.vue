@@ -59,7 +59,7 @@
                 reader.onload = () => {
                     formData.append('file', reader.result)
                     axios({
-                        url: 'http://0.0.0.0:5000/latentspace',
+                        url: 'https://api.innocenceproject.xyz/latentspace',
                         method: 'post',
                         data: formData,
                         headers: { "Content-Type": "multipart/form-data" },
