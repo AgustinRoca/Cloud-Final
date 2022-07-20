@@ -49,27 +49,6 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Faces"
-  /face:
-    get:
-      tags:
-      - "Endpoints"
-      summary: "Get face from database"
-      operationId: "getFace"
-      x-google-backend:
-        address: https://imageservice-2kkbwofikq-uc.a.run.app/face
-        deadline: 600
-      parameters:
-      - name: id
-        description: "ID to look"
-        in: query
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Faces"
-    
     post:
       tags:
       - "Endpoints"
@@ -95,6 +74,26 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/CreateFaces"
+  /face:
+    get:
+      tags:
+      - "Endpoints"
+      summary: "Get face from database"
+      operationId: "getFace"
+      x-google-backend:
+        address: https://imageservice-2kkbwofikq-uc.a.run.app/face
+        deadline: 600
+      parameters:
+      - name: id
+        description: "ID to look"
+        in: query
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Faces"
   /transition:
     post:
       tags:
