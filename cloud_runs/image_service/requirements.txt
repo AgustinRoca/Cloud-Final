@@ -1,4 +1,6 @@
-Flask
-flask_cors
-gunicorn
-google-api-core
+Flask==2.1.0
+flask-cors
+pg8000==1.24.2
+SQLAlchemy==1.4.38
+cloud-sql-python-connector==0.6.1
+gunicorn==20.1.0
