@@ -67,8 +67,8 @@ def search_by_range_id(db: sqlalchemy.engine.base.Engine, start_id, end_id):
             if len(ans) == 0:
                 print('Retreived 0 images')
                 return jsonify({'imgs_bytes': [], 'ids': []})
-            imgs_bytes = ans[0]
-            ids = ans[1]
+            ids = ans[0]
+            imgs_bytes = ans[1]
             print('Retreived', len(imgs_bytes), 'images')
     except Exception as e:
         return make_error(400, "Issue when getting image")
