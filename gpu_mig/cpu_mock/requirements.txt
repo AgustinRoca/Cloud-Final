@@ -1,4 +1,7 @@
-numpy==1.14.5
-Pillow==6.2.1
+numpy
+Pillow
 requests==2.22.0
 google-cloud-pubsub
+pg8000==1.24.2
+SQLAlchemy==1.4.38
+cloud-sql-python-connector==0.6.1

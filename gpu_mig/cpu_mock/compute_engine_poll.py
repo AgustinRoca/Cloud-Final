@@ -5,9 +5,9 @@ import json
 
 from mock_functions import *
 
-def main():
-    # timeout = 5.0
+db_read = init_connection_pool_replica()
 
+def main():
     sub = pubsub_v1.SubscriberClient()
     subscrption_path = 'projects/innocenceprojectcloud/subscriptions/task-sub'
 
@@ -64,7 +64,7 @@ def faces(data):
 
 def transition(data):
     args = data.split(';')
-    return generate_transition(int(args[1]), int(args[2]), int(args[3]))
+    return generate_transition(db_read, int(args[1]), int(args[2]), int(args[3]))
 
 def latentspace(data):
     args = data.split(';')
@@ -91,11 +91,11 @@ def features(data):
     features_dict['smile'] = float(args[16])
     features_dict['yaw'] = float(args[17])
 
-    return change_features(id, features_dict)
+    return change_features(db_read, id, features_dict)
 
 def interchange(data):
     args = data.split(';')
-    return mix_styles(args[1], args[2])
+    return mix_styles(db_read, args[1], args[2])
 
 def error(data):
     sleep(1)

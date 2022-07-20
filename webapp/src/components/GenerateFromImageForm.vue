@@ -57,7 +57,8 @@
                 let reader = new FileReader();
                 reader.readAsDataURL(this.image[0]);
                 reader.onload = () => {
-                    formData.append('file', reader.result)
+
+                    formData.append('file', reader.result.split(",")[1])
                     axios({
                         url: 'https://api.innocenceproject.xyz/latentspace',
                         method: 'post',
