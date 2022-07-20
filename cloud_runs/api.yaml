@@ -8,8 +8,6 @@ schemes:
 - https
 produces:
 - application/json
-security:
-- api_key: []
 paths:
   /hello:
     get:
@@ -36,22 +34,36 @@ paths:
         address: https://imageservice-2kkbwofikq-uc.a.run.app/faces
         deadline: 600
       parameters:
-      - name: "params"
-        description: "From and to IDs to look"
-        in: body
+      - in: query
+        name: id1
+        type: integer
         required: true
-        schema:
-          type: object
-          required:
-            - id1
-            - id2
-          properties:
-            id1:
-              type: integer
-              example: 0
-            id2:
-              type: integer
-              example: 3
+        description: Numeric ID of the user to get
+      - in: query
+        name: id2
+        type: integer
+        required: true
+        description: Numeric ID of the user to get
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Faces"
+  /face:
+    get:
+      tags:
+      - "Endpoints"
+      summary: "Get face from database"
+      operationId: "getFace"
+      x-google-backend:
+        address: https://imageservice-2kkbwofikq-uc.a.run.app/face
+        deadline: 600
+      parameters:
+      - name: id
+        description: "ID to look"
+        in: query
+        required: true
+        type: integer
       responses:
         "200":
           description: "successful operation"
@@ -159,11 +171,11 @@ paths:
         schema:
           type: object
           required:
-            - z
+            - img
           properties:
-            file:
-              type: integer
-              example: z_to_save
+            img:
+              type: string
+              example: base64string
       responses:
         "200":
           description: "successful operation"
