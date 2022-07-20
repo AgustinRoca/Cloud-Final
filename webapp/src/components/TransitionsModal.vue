@@ -56,7 +56,7 @@ export default {
         },
         save(){
             let formData = new FormData();
-            formData.append('z', this.zs[this.img_index - 1])
+            formData.append('img', this.imgs_bytes[this.img_index - 1])
             axios({
                 url: 'https://api.innocenceproject.xyz/save',
                 method: 'post',
